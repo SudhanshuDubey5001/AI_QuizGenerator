@@ -1,7 +1,9 @@
 package com.sudhanshu.quizapp.feature_quiz.presentation.topics
 
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.ai.client.generativeai.GenerativeModel
@@ -9,11 +11,14 @@ import com.google.ai.client.generativeai.type.PromptBlockedException
 import com.sudhanshu.quizapp.core.presentation.UiEvent
 import com.sudhanshu.quizapp.core.utils.Utils
 import com.sudhanshu.quizapp.core.utils.Prompts
+import com.sudhanshu.quizapp.feature_quiz.domain.repository.PopularTopics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,30 +33,47 @@ class TopicScreenVM @Inject constructor(
     private val _uiEvents = MutableSharedFlow<UiEvent>()
     val uiEvents = _uiEvents.asSharedFlow()
 
-    private val _topics = mutableStateOf(emptyList<String>())
-    val topics = _topics
+    private val _topics = mutableStateListOf<String>()
+    val topics: SnapshotStateList<String> = _topics
+
+    private val _popularTopics = mutableStateListOf<PopularTopicState>()
+    val popularTopics: SnapshotStateList<PopularTopicState> = _popularTopics
 
     private val DEBOUNCE_TIME_MS = 2000L
 
     var generativeAIJob: Job = Job()
 
+    init {
+        PopularTopics.topics.forEach { topic ->
+            _popularTopics.add(
+                PopularTopicState(
+                    topic = topic
+                )
+            )
+        }
+    }
+
     private fun onSubmitTopic() {
-        Utils.log("Submit called")
         if (_topicProps.value.name.isBlank()) return
-        Utils.log("Not blank")
         if (_topicProps.value.loading) {
-            Utils.log("Still loading, showing snackbar...")
             showSnackBar("Just a second, validating if AI is happy with your topic")
             return
         }
-        Utils.log("After snackbar")
         if (!_topicProps.value.isValid) return
-        Utils.log("After isValid")
+        _topics.add(_topicProps.value.name)
         resetTopicState()
     }
 
     private fun validateTopic(topic: String) {
-        Utils.log("TOPIC == " + topic)
+        //if topic already exist in list then return
+        val exists = _topics.any { it.lowercase() == _topicProps.value.name.lowercase() }
+        if (exists) {
+            _topicProps.value = _topicProps.value.copy(
+                loading = false,
+                isAlreadyExistInList = true
+            )
+            return
+        }
         val prompt = Prompts.validatePrompt(topic)
         generativeAIJob = viewModelScope.launch {
             delay(DEBOUNCE_TIME_MS)
@@ -99,20 +121,54 @@ class TopicScreenVM @Inject constructor(
         }
     }
 
+    private fun deleteTopicFromList(index: Int) {
+        _popularTopics.forEachIndexed { i, topicState ->
+            if (topicState.topic == _topics[index]) {
+                _popularTopics[i] = PopularTopicState(
+                    topic = topicState.topic,
+                    isSelected = false
+                )
+            }
+        }
+        _topics.removeAt(index)
+    }
+
+    private fun addTopicFromPopularTopics(topicState: PopularTopicState) {
+        _topics.add(topicState.topic)
+        val index = _popularTopics.indexOf(topicState)
+        _popularTopics[index] = PopularTopicState(
+            topic = topicState.topic,
+            isSelected = true
+        )
+    }
+
     fun onEvents(event: TopicsScreenEvents) {
         when (event) {
-            is TopicsScreenEvents.onTopicInputEntered -> {
-                //first cancel the old gemini API request if still running
+            is TopicsScreenEvents.OnTopicInputEntered -> {
                 _topicProps.value = _topicProps.value.copy(
                     name = event.value,
-                    loading = true
+                    loading = true,
+                    isAlreadyExistInList = false
                 )
+                //first cancel the old gemini API request if still running
                 cancelPreviousAPIRequests()
                 if (event.value.isNotBlank()) validateTopic(event.value)
+                else resetTopicState()
             }
 
-            TopicsScreenEvents.onSubmitTopic -> {
+            TopicsScreenEvents.OnSubmitTopic -> {
+                _topicProps.value = _topicProps.value.copy(
+                    isSubmitted = TopicSubmittedState.PROCESSING
+                )
                 onSubmitTopic()
+            }
+
+            is TopicsScreenEvents.OnTopicDeletePressed -> {
+                deleteTopicFromList(event.topicListIndex)
+            }
+
+            is TopicsScreenEvents.OnTopicSelectedFromPopularTopics -> {
+                addTopicFromPopularTopics(event.topicState)
             }
         }
     }

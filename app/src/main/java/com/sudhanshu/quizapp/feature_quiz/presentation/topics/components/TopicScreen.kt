@@ -1,7 +1,11 @@
 package com.sudhanshu.quizapp.feature_quiz.presentation.topics.components
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -14,13 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.sudhanshu.quizapp.R
 import com.sudhanshu.quizapp.core.presentation.UiEvent
 import com.sudhanshu.quizapp.core.presentation.components.QuizAppNavigationBar
 import com.sudhanshu.quizapp.core.presentation.components.SetStatusBarColor
-import com.sudhanshu.quizapp.core.utils.Utils
 import com.sudhanshu.quizapp.feature_quiz.presentation.topics.TopicScreenVM
 import com.sudhanshu.quizapp.feature_quiz.presentation.topics.TopicsScreenEvents
 import kotlinx.coroutines.flow.collectLatest
@@ -42,6 +46,11 @@ fun TopicScreen(
     )
 
     val snakbarhostState = remember { SnackbarHostState() }
+    val topicProps = viewModel.topicProps.value
+    val topicsList = viewModel.topics
+    val popularTopics = viewModel.popularTopics
+
+    val scrollState = rememberScrollState()
 
     LaunchedEffect(Unit) {
         viewModel.uiEvents.collectLatest { event ->
@@ -62,17 +71,33 @@ fun TopicScreen(
         Modifier.padding(it)
         Column {
             QuizAppNavigationBar(heading = "Topic", onClickBackButton = { onClickBackButton() })
-            TopicInput(
-                fontFamily = fontFamily,
-                inputProp = viewModel.topicProps.value,
-                onValueChanged = {
-                    viewModel.onEvents(TopicsScreenEvents.onTopicInputEntered(it))
-                },
-                onSubmitTopic = {
-                    viewModel.onEvents(TopicsScreenEvents.onSubmitTopic)
-                }
-            )
-            ExampleTopics(fontFamily = fontFamily)
+            Column(modifier = Modifier.verticalScroll(scrollState)) {
+                TopicInput(
+                    fontFamily = fontFamily,
+                    inputProp = topicProps,
+                    onValueChanged = {
+                        viewModel.onEvents(TopicsScreenEvents.OnTopicInputEntered(it))
+                    },
+                    onSubmitTopic = {
+                        viewModel.onEvents(TopicsScreenEvents.OnSubmitTopic)
+                    }
+                )
+                TopicsAddedDisplay(
+                    fontFamily = fontFamily,
+                    topicsList = topicsList,
+                    onDeletePressed = { index ->
+                        viewModel.onEvents(TopicsScreenEvents.OnTopicDeletePressed(index))
+                    })
+                Spacer(modifier = Modifier.height(16.dp))
+                PopularTopicsCardView(
+                    topicsList = popularTopics,
+                    fontFamily = fontFamily,
+                    onPressed = {topicState ->
+                        viewModel.onEvents(TopicsScreenEvents.OnTopicSelectedFromPopularTopics(topicState))
+                    }
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+            }
         }
     }
 }

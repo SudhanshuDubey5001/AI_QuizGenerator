@@ -15,7 +15,9 @@ import androidx.compose.ui.unit.sp
 import com.sudhanshu.quizapp.core.utils.ErrorMessages
 
 @Composable
-fun ErrorMessageDisplay() {
+fun ErrorMessageDisplay(
+    errorMessage: String
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -26,7 +28,7 @@ fun ErrorMessageDisplay() {
     ) {
         Text(
             modifier = Modifier.padding(14.dp),
-            text = ErrorMessages.INVALID_TOPIC,
+            text = errorMessage,
             fontSize = 12.sp
         )
     }
