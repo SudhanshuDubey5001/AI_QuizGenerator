@@ -24,6 +24,7 @@ fun QuizAppNavigationBar(
     heading: String,
     onClickBackButton: () -> Unit
 ) {
+    SetStatusBarColor(color = MaterialTheme.colorScheme.primary)
     NavigationBar(
         modifier = Modifier.height(56.dp),
         containerColor = MaterialTheme.colorScheme.secondary,

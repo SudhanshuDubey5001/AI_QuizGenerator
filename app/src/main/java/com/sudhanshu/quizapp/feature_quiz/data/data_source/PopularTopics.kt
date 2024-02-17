@@ -1,0 +1,37 @@
+package com.sudhanshu.quizapp.feature_quiz.data.data_source
+
+object PopularTopics {
+    val topics = listOf(
+        "space",
+        "evolution",
+        "world wars",
+        "renaissance art",
+        "olympics",
+        "psychology",
+        "marketing",
+        "climate change",
+        "ancient civilizations",
+        "movies & tv",
+        "biodiversity",
+        "mythology & legends",
+        "music",
+        "travel & exploration",
+        "artificial intelligence",
+        "future technologies",
+        "food & cooking",
+        "law & government",
+        "animals & plants",
+        "greek mythology",
+        "video games",
+        "chemistry",
+        "medieval europe",
+        "art history & styles",
+        "sports",
+        "physics",
+        "earth & environment",
+        "languages",
+        "mathematics",
+        "philosophy",
+        "business & economics",
+    )
+}

@@ -11,20 +11,20 @@ import com.google.ai.client.generativeai.type.PromptBlockedException
 import com.sudhanshu.quizapp.core.presentation.UiEvent
 import com.sudhanshu.quizapp.core.utils.Utils
 import com.sudhanshu.quizapp.core.utils.Prompts
-import com.sudhanshu.quizapp.feature_quiz.domain.repository.PopularTopics
+import com.sudhanshu.quizapp.feature_quiz.data.data_source.GlobalData
+import com.sudhanshu.quizapp.feature_quiz.data.data_source.PopularTopics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class TopicScreenVM @Inject constructor(
-    private val generativeModel: GenerativeModel
+    private val generativeModel: GenerativeModel,
+    private val globalData: GlobalData
 ) : ViewModel() {
 
     private val _topicProps = mutableStateOf(TopicState())
@@ -33,11 +33,10 @@ class TopicScreenVM @Inject constructor(
     private val _uiEvents = MutableSharedFlow<UiEvent>()
     val uiEvents = _uiEvents.asSharedFlow()
 
-    private val _topics = mutableStateListOf<String>()
-    val topics: SnapshotStateList<String> = _topics
+    val topicsSelected = globalData.topicsSelected
 
-    private val _popularTopics = mutableStateListOf<PopularTopicState>()
-    val popularTopics: SnapshotStateList<PopularTopicState> = _popularTopics
+    private val _popularTopicsStateHolder = mutableStateListOf<PopularTopicState>()
+    val popularTopicsStateHolder: SnapshotStateList<PopularTopicState> = _popularTopicsStateHolder
 
     private val DEBOUNCE_TIME_MS = 2000L
 
@@ -45,7 +44,7 @@ class TopicScreenVM @Inject constructor(
 
     init {
         PopularTopics.topics.forEach { topic ->
-            _popularTopics.add(
+            _popularTopicsStateHolder.add(
                 PopularTopicState(
                     topic = topic
                 )
@@ -60,14 +59,14 @@ class TopicScreenVM @Inject constructor(
             return
         }
         if (!_topicProps.value.isValid) return
-        _topics.add(_topicProps.value.name)
+        globalData.addTopic(_topicProps.value.name)
+        updatePopularTopicState(_topicProps.value.name)
         resetTopicState()
     }
 
     private fun validateTopic(topic: String) {
-        //if topic already exist in list then return
-        val exists = _topics.any { it.lowercase() == _topicProps.value.name.lowercase() }
-        if (exists) {
+//        val exists = globalData.checkIfExists(_topicProps.value.name)
+        if (globalData.topicsSelected.contains(_topicProps.value.name)) {
             _topicProps.value = _topicProps.value.copy(
                 loading = false,
                 isAlreadyExistInList = true
@@ -108,11 +107,6 @@ class TopicScreenVM @Inject constructor(
         if (generativeAIJob.isActive) generativeAIJob.cancel()
     }
 
-    suspend fun callGeminiAPI(prompt: String): String {
-        val response = generativeModel.generateContent(prompt = prompt)
-        return response.text.toString()
-    }
-
     private fun showSnackBar(msg: String) {
         viewModelScope.launch {
             _uiEvents.emit(
@@ -122,37 +116,45 @@ class TopicScreenVM @Inject constructor(
     }
 
     private fun deleteTopicFromList(index: Int) {
-        _popularTopics.forEachIndexed { i, topicState ->
-            if (topicState.topic == _topics[index]) {
-                _popularTopics[i] = PopularTopicState(
+        _popularTopicsStateHolder.forEachIndexed { i, topicState ->
+            if (topicState.topic == globalData.topicsSelected[index]) {
+                _popularTopicsStateHolder[i] = PopularTopicState(
                     topic = topicState.topic,
                     isSelected = false
                 )
             }
         }
-        _topics.removeAt(index)
+        globalData.removeTopic(index)
     }
 
     private fun addTopicFromPopularTopics(topicState: PopularTopicState) {
-        _topics.add(topicState.topic)
-        val index = _popularTopics.indexOf(topicState)
-        _popularTopics[index] = PopularTopicState(
-            topic = topicState.topic,
-            isSelected = true
-        )
+        globalData.addTopic(topicState.topic)
+        updatePopularTopicState(topicState.topic)
+    }
+
+    private fun updatePopularTopicState(topic:String){
+        _popularTopicsStateHolder.forEachIndexed { index, topicState ->
+            if(topicState.topic == topic){
+                _popularTopicsStateHolder[index] = PopularTopicState(
+                    topic = topicState.topic,
+                    isSelected = !topicState.isSelected
+                )
+            }
+        }
     }
 
     fun onEvents(event: TopicsScreenEvents) {
         when (event) {
             is TopicsScreenEvents.OnTopicInputEntered -> {
+                val topic = event.value.lowercase()
                 _topicProps.value = _topicProps.value.copy(
-                    name = event.value,
+                    name = topic,
                     loading = true,
                     isAlreadyExistInList = false
                 )
                 //first cancel the old gemini API request if still running
                 cancelPreviousAPIRequests()
-                if (event.value.isNotBlank()) validateTopic(event.value)
+                if (event.value.isNotBlank()) validateTopic(topic)
                 else resetTopicState()
             }
 
@@ -171,5 +173,9 @@ class TopicScreenVM @Inject constructor(
                 addTopicFromPopularTopics(event.topicState)
             }
         }
+    }
+    private suspend fun callGeminiAPI(prompt: String): String {
+        val response = generativeModel.generateContent(prompt = prompt)
+        return response.text.toString()
     }
 }
