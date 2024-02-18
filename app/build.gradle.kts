@@ -84,6 +84,13 @@ dependencies {
 
     //google fonts
     implementation("androidx.compose.ui:ui-text-google-fonts:1.6.1")
+
+    //coil
+    implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation("io.coil-kt:coil-gif:2.2.2")
+
+    //GSON for JSON parsing
+    implementation("com.google.code.gson:gson:2.10.1")
 }
 
 // Allow references to generated code

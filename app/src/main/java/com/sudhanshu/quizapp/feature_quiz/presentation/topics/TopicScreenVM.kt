@@ -27,13 +27,14 @@ class TopicScreenVM @Inject constructor(
     private val globalData: GlobalData
 ) : ViewModel() {
 
-    private val _topicProps = mutableStateOf(TopicState())
-    val topicProps: State<TopicState> = _topicProps
+    private val _topicProps = mutableStateOf(Topic())
+    val topicProps: State<Topic> = _topicProps
 
     private val _uiEvents = MutableSharedFlow<UiEvent>()
     val uiEvents = _uiEvents.asSharedFlow()
 
-    val topicsSelected = globalData.topicsSelected
+//    val topicsSelected = globalData.topicsSelected
+    val topicsSelected = globalData.configuration.value.topics
 
     private val _popularTopicsStateHolder = mutableStateListOf<PopularTopicState>()
     val popularTopicsStateHolder: SnapshotStateList<PopularTopicState> = _popularTopicsStateHolder
@@ -54,11 +55,11 @@ class TopicScreenVM @Inject constructor(
 
     private fun onSubmitTopic() {
         if (_topicProps.value.name.isBlank()) return
-        if (_topicProps.value.loading) {
+        if (_topicProps.value.topicState == TopicState.LOADING) {
             showSnackBar("Just a second, validating if AI is happy with your topic")
             return
         }
-        if (!_topicProps.value.isValid) return
+        if (_topicProps.value.topicState == TopicState.INVALID) return
         globalData.addTopic(_topicProps.value.name)
         updatePopularTopicState(_topicProps.value.name)
         resetTopicState()
@@ -66,10 +67,9 @@ class TopicScreenVM @Inject constructor(
 
     private fun validateTopic(topic: String) {
 //        val exists = globalData.checkIfExists(_topicProps.value.name)
-        if (globalData.topicsSelected.contains(_topicProps.value.name)) {
+        if (topicsSelected.contains(_topicProps.value.name)) {
             _topicProps.value = _topicProps.value.copy(
-                loading = false,
-                isAlreadyExistInList = true
+                topicState = TopicState.EXIST_IN_LIST
             )
             return
         }
@@ -81,26 +81,23 @@ class TopicScreenVM @Inject constructor(
                 val response = callGeminiAPI(prompt)
                 Utils.log(response)
                 _topicProps.value = _topicProps.value.copy(
-                    isValid = response.lowercase() == "yes",
-                    loading = false
+                    topicState = if(response.lowercase() == "yes") TopicState.VALID else TopicState.INVALID
                 )
             } catch (e: PromptBlockedException) {
                 //when user uses obscene language or something offensive or generating a quiz is not possible
                 _topicProps.value = _topicProps.value.copy(
-                    isValid = false,
-                    loading = false
+                    topicState = TopicState.INVALID
                 )
             } catch (e: Exception) {
                 _topicProps.value = _topicProps.value.copy(
-                    isValid = false,
-                    loading = false
+                    topicState = TopicState.INVALID
                 )
             }
         }
     }
 
     private fun resetTopicState() {
-        _topicProps.value = TopicState()
+        _topicProps.value = Topic()
     }
 
     private fun cancelPreviousAPIRequests() {
@@ -117,7 +114,7 @@ class TopicScreenVM @Inject constructor(
 
     private fun deleteTopicFromList(index: Int) {
         _popularTopicsStateHolder.forEachIndexed { i, topicState ->
-            if (topicState.topic == globalData.topicsSelected[index]) {
+            if (topicState.topic == topicsSelected[index]) {
                 _popularTopicsStateHolder[i] = PopularTopicState(
                     topic = topicState.topic,
                     isSelected = false
@@ -149,8 +146,7 @@ class TopicScreenVM @Inject constructor(
                 val topic = event.value.lowercase()
                 _topicProps.value = _topicProps.value.copy(
                     name = topic,
-                    loading = true,
-                    isAlreadyExistInList = false
+                    topicState = TopicState.LOADING,
                 )
                 //first cancel the old gemini API request if still running
                 cancelPreviousAPIRequests()
@@ -160,7 +156,7 @@ class TopicScreenVM @Inject constructor(
 
             TopicsScreenEvents.OnSubmitTopic -> {
                 _topicProps.value = _topicProps.value.copy(
-                    isSubmitted = TopicSubmittedState.PROCESSING
+                    isSubmitted = true
                 )
                 onSubmitTopic()
             }

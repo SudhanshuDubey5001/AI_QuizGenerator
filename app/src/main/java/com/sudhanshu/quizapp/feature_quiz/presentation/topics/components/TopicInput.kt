@@ -18,10 +18,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -33,13 +29,14 @@ import androidx.compose.ui.unit.sp
 import com.sudhanshu.quizapp.R
 import com.sudhanshu.quizapp.core.utils.ErrorMessages
 import com.sudhanshu.quizapp.feature_quiz.presentation.topics.TopicState
+import com.sudhanshu.quizapp.feature_quiz.presentation.topics.Topic
 import com.sudhanshu.quizapp.feature_quiz.presentation.topics.TopicSubmittedState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopicInput(
     fontFamily: FontFamily,
-    inputProp: TopicState,
+    inputProp: Topic,
     onValueChanged: (newValue: String) -> Unit,
     onSubmitTopic: () -> Unit
 ) {
@@ -72,50 +69,52 @@ fun TopicInput(
                 onSubmitTopic()
             }),
             leadingIcon = {
-                 Icon(imageVector = Icons.Default.Search, contentDescription = "search icon")
+                Icon(imageVector = Icons.Default.Search, contentDescription = "search icon")
             },
             trailingIcon = {
                 if (inputProp.name.isNotEmpty()) {
-                    if (inputProp.loading) {
+                    if (inputProp.topicState == TopicState.LOADING) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(16.dp)
                         )
-                    } else {
-                        if (inputProp.isValid) {
-                            Image(
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .background(Color.Transparent),
-                                painter = painterResource(R.drawable.validated_icon),
-                                contentDescription = "green tick icon | validated"
-                            )
-                        } else {
-                            Image(
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .background(Color.Transparent),
-                                painter = painterResource(R.drawable.not_validated_icon),
-                                contentDescription = "green tick icon | validated"
-                            )
-                        }
+                    } else if (inputProp.topicState == TopicState.VALID) {
+                        Image(
+                            modifier = Modifier
+                                .size(24.dp)
+                                .background(Color.Transparent),
+                            painter = painterResource(R.drawable.validated_icon),
+                            contentDescription = "green tick icon | validated"
+                        )
+                    } else if (inputProp.topicState == TopicState.INVALID) {
+                        Image(
+                            modifier = Modifier
+                                .size(24.dp)
+                                .background(Color.Transparent),
+                            painter = painterResource(R.drawable.not_validated_icon),
+                            contentDescription = "red cross icon | not validated"
+                        )
                     }
                 }
             }
         )
         Spacer(modifier = Modifier.height(10.dp))
         if (inputProp.name.isNotEmpty()) {
-            if (!inputProp.loading && !inputProp.isAlreadyExistInList) {
-                if (!inputProp.isValid) ErrorMessageDisplay(
+            if (inputProp.topicState == TopicState.INVALID) {
+                ErrorMessageDisplay(
                     errorMessage = ErrorMessages.INVALID_TOPIC
                 )
-            } else {
-                if (inputProp.isSubmitted == TopicSubmittedState.PROCESSING) ErrorMessageDisplay(
+            } else if (inputProp.topicState == TopicState.EXIST_IN_LIST) {
+                ErrorMessageDisplay(
+                    errorMessage = ErrorMessages.ALREADY_PRESENT
+                )
+            } else if (
+                inputProp.topicState == TopicState.LOADING &&
+                inputProp.isSubmitted
+            ) {
+                ErrorMessageDisplay(
                     errorMessage = ErrorMessages.STILL_LOADING
                 )
             }
-            if (inputProp.isAlreadyExistInList) ErrorMessageDisplay(
-                errorMessage = ErrorMessages.ALREADY_PRESENT
-            )
         }
     }
 }

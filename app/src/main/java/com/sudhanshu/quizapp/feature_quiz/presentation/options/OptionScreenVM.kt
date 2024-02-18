@@ -8,8 +8,24 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OptionScreenVM @Inject constructor(
-    private val generativeModel: GenerativeModel,
     private val globalData: GlobalData
-) : ViewModel(){
+) : ViewModel() {
 
+    val config = globalData.configuration
+
+    fun onEvents(event: OptionScreenEvents){
+        when(event){
+            is OptionScreenEvents.OnValueChangedNameInput -> {
+                globalData.setName(event.name)
+            }
+
+            is OptionScreenEvents.OnValueChangedQuestionsCount -> {
+                globalData.setQuestionCount(event.count.toInt())
+            }
+
+            is OptionScreenEvents.OnDifficultyLevelChanged -> {
+                globalData.setDifficultyLevel(event.level)
+            }
+        }
+    }
 }
