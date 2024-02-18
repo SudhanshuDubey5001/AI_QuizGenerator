@@ -70,6 +70,8 @@ fun TopicScreen(
                         message = event.msg
                     )
                 }
+
+                is UiEvent.navigate -> Unit
             }
         }
     }

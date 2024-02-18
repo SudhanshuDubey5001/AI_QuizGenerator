@@ -10,8 +10,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.compose.QuizAppTheme
 import com.sudhanshu.quizapp.core.utils.Screens
-import com.sudhanshu.quizapp.feature_quiz.presentation.loading.LoadingScreen
+import com.sudhanshu.quizapp.feature_quiz.presentation.loading.components.LoadingScreen
 import com.sudhanshu.quizapp.feature_quiz.presentation.options.components.OptionScreen
+import com.sudhanshu.quizapp.feature_quiz.presentation.quiz.components.QuizScreen
 import com.sudhanshu.quizapp.feature_quiz.presentation.topics.components.TopicScreen
 import com.sudhanshu.quizapp.feature_quiz.presentation.welcome.components.WelcomeScreen
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,6 +47,11 @@ class MainActivity : ComponentActivity() {
                             route = Screens.LOADING
                         ){
                             LoadingScreen(navController = navController)
+                        }
+                        composable(
+                            route = Screens.QUIZ
+                        ){
+                            QuizScreen(navController = navController)
                         }
                     }
                 }

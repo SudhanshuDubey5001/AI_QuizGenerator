@@ -1,7 +1,7 @@
 package com.sudhanshu.quizapp.feature_quiz.domain.model
 
 data class Quiz(
-    val questions: List<Question>
+    val questions: List<Question> = emptyList()
 )
 
 data class Question(
