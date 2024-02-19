@@ -7,4 +7,6 @@ object Screens {
     const val LOADING = "loading_screen"
     const val QUIZ = "quiz_screen"
     const val RESULT = "result_screen"
+
+    const val BACK = "back_button_pressed"  // for going back to previous screen
 }

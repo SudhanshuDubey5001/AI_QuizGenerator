@@ -19,15 +19,17 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sudhanshu.quizapp.core.utils.Utils
 import com.sudhanshu.quizapp.feature_quiz.presentation.topics.PopularTopicState
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PopularTopicsCardView(
     topicsList: List<PopularTopicState>,
-    fontFamily: FontFamily,
     onPressed: (topic: PopularTopicState) -> Unit
 ) {
+    val fontFamily = Utils.fontFamily
+
     Card(
         modifier = Modifier
             .fillMaxWidth()

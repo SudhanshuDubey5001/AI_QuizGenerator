@@ -12,24 +12,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.sudhanshu.quizapp.R
 import com.sudhanshu.quizapp.core.presentation.components.SetStatusBarColor
+import com.sudhanshu.quizapp.core.utils.Screens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WelcomeScreen(
-    navController: NavController
+    onNavigate: (route: String) -> Unit
 ) {
-    val fontFamily = FontFamily(
-        Font(
-            R.font.comfortaa, FontWeight.Normal
-        )
-    )
+    fun navigateToTopicScreen(){
+        onNavigate(Screens.TOPICS)
+    }
 
     SetStatusBarColor(color = MaterialTheme.colorScheme.primary)
 
@@ -45,7 +39,7 @@ fun WelcomeScreen(
                     .padding(20.dp),
                 verticalArrangement = Arrangement.Center
             ) {
-                Header(fontFamily = fontFamily)
+                Header()
             }
             Card(
                 modifier = Modifier
@@ -57,7 +51,7 @@ fun WelcomeScreen(
                 ),
                 elevation = CardDefaults.cardElevation(5.dp),
             ) {
-                Footer(fontFamily = fontFamily, navController = navController)
+                Footer(navigateToTopicScreen = { navigateToTopicScreen() })
             }
         }
     }

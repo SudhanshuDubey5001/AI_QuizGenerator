@@ -37,22 +37,24 @@ import com.sudhanshu.quizapp.feature_quiz.presentation.options.OptionScreenVM
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OptionScreen(
-    navController: NavController,
+    onNavigate: (route: String) -> Unit,
     viewModel: OptionScreenVM = hiltViewModel()
 ) {
 
     val config = viewModel.config.value
+    val user = viewModel.user.value
+
     val focus = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
 
     val showQuestionsCounter = remember { mutableStateOf(false) }
 
     fun onBackButtonPressed() {
-        navController.popBackStack()
+        onNavigate(Screens.BACK)
     }
 
     fun onStartPressed() {
-        navController.navigate(Screens.LOADING)
+        onNavigate(Screens.LOADING)
     }
 
     Scaffold(
@@ -73,7 +75,9 @@ fun OptionScreen(
 
                 CardCustom() {
                     CardHeading(heading = "Name")
-                    NameInput(config = config, onValueChanged = { name ->
+                    NameInput(
+                        user = user,
+                        onValueChanged = { name ->
                         viewModel.onEvents(OptionScreenEvents.OnValueChangedNameInput(name))
                     })
                 }

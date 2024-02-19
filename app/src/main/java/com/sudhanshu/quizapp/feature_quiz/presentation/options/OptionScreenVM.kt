@@ -1,30 +1,32 @@
 package com.sudhanshu.quizapp.feature_quiz.presentation.options
 
 import androidx.lifecycle.ViewModel
-import com.google.ai.client.generativeai.GenerativeModel
-import com.sudhanshu.quizapp.feature_quiz.data.data_source.GlobalData
+import com.sudhanshu.quizapp.feature_quiz.data.data_source.QuizConfig
+import com.sudhanshu.quizapp.feature_quiz.data.data_source.UserData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class OptionScreenVM @Inject constructor(
-    private val globalData: GlobalData
+    private val quizConfig: QuizConfig,
+    private val userData: UserData
 ) : ViewModel() {
 
-    val config = globalData.configuration
+    val config = quizConfig.configuration
+    val user = userData.user
 
     fun onEvents(event: OptionScreenEvents){
         when(event){
             is OptionScreenEvents.OnValueChangedNameInput -> {
-                globalData.setName(event.name)
+                userData.setName(event.name)
             }
 
             is OptionScreenEvents.OnValueChangedQuestionsCount -> {
-                globalData.setQuestionCount(event.count.toInt())
+                quizConfig.setQuestionCount(event.count.toInt())
             }
 
             is OptionScreenEvents.OnDifficultyLevelChanged -> {
-                globalData.setDifficultyLevel(event.level)
+                quizConfig.setDifficultyLevel(event.level)
             }
         }
     }

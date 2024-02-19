@@ -6,13 +6,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.PromptBlockedException
 import com.sudhanshu.quizapp.core.presentation.UiEvent
 import com.sudhanshu.quizapp.core.utils.Utils
 import com.sudhanshu.quizapp.core.utils.Prompts
-import com.sudhanshu.quizapp.feature_quiz.data.data_source.GlobalData
+import com.sudhanshu.quizapp.feature_quiz.data.data_source.QuizConfig
 import com.sudhanshu.quizapp.feature_quiz.data.data_source.PopularTopics
+import com.sudhanshu.quizapp.feature_quiz.domain.repository.AI_Operations
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -23,8 +23,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TopicScreenVM @Inject constructor(
-    private val generativeModel: GenerativeModel,
-    private val globalData: GlobalData
+    private val aiOperations: AI_Operations,
+    private val quizConfig: QuizConfig
 ) : ViewModel() {
 
     private val _topicProps = mutableStateOf(Topic())
@@ -34,7 +34,7 @@ class TopicScreenVM @Inject constructor(
     val uiEvents = _uiEvents.asSharedFlow()
 
 //    val topicsSelected = globalData.topicsSelected
-    val topicsSelected = globalData.configuration.value.topics
+    val topicsSelected = quizConfig.configuration.value.topics
 
     private val _popularTopicsStateHolder = mutableStateListOf<PopularTopicState>()
     val popularTopicsStateHolder: SnapshotStateList<PopularTopicState> = _popularTopicsStateHolder
@@ -60,7 +60,7 @@ class TopicScreenVM @Inject constructor(
             return
         }
         if (_topicProps.value.topicState == TopicState.INVALID) return
-        globalData.addTopic(_topicProps.value.name)
+        quizConfig.addTopic(_topicProps.value.name)
         updatePopularTopicState(_topicProps.value.name)
         resetTopicState()
     }
@@ -77,7 +77,6 @@ class TopicScreenVM @Inject constructor(
         generativeAIJob = viewModelScope.launch {
             delay(DEBOUNCE_TIME_MS)
             try {
-                Utils.log("------Calling Gemini API------")
                 val response = callGeminiAPI(prompt)
                 Utils.log(response)
                 _topicProps.value = _topicProps.value.copy(
@@ -121,11 +120,11 @@ class TopicScreenVM @Inject constructor(
                 )
             }
         }
-        globalData.removeTopic(index)
+        quizConfig.removeTopic(index)
     }
 
     private fun addTopicFromPopularTopics(topicState: PopularTopicState) {
-        globalData.addTopic(topicState.topic)
+        quizConfig.addTopic(topicState.topic)
         updatePopularTopicState(topicState.topic)
     }
 
@@ -171,7 +170,7 @@ class TopicScreenVM @Inject constructor(
         }
     }
     private suspend fun callGeminiAPI(prompt: String): String {
-        val response = generativeModel.generateContent(prompt = prompt)
-        return response.text.toString()
+        val response = aiOperations.getResponseFromGenerativeAI(prompt = prompt)
+        return response
     }
 }

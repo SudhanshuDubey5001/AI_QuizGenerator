@@ -38,15 +38,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sudhanshu.quizapp.R
+import com.sudhanshu.quizapp.core.utils.Utils
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TopicsAddedDisplay(
-    fontFamily: FontFamily,
     topicsList: List<String>,
     onDeletePressed: (index: Int) -> Unit
 ) {
 //    val sampleList = listOf("Big bang theory", "Stuart", "Star Wars The return of Jedi")
+
+    val fontFamily = Utils.fontFamily
 
     Card(
         modifier = Modifier

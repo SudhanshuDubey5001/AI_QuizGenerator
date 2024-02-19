@@ -21,13 +21,13 @@ import androidx.compose.material3.NavigationBar
 
 @Composable
 fun QuizAppNavigationBar(
-    heading: String,
+    heading: String = "",
     onClickBackButton: () -> Unit
 ) {
     SetStatusBarColor(color = MaterialTheme.colorScheme.primary)
     NavigationBar(
         modifier = Modifier.height(56.dp),
-        containerColor = MaterialTheme.colorScheme.secondary,
+        containerColor = MaterialTheme.colorScheme.primary,
         tonalElevation = 10.dp
     ) {
         Row(

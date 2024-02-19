@@ -7,7 +7,6 @@ data class Configuration(
     val topics: List<String>,
     val level: Level = Level.EASY,
     val questionsCount: Int = 10,
-    val name: String = ""
 )
 
 enum class Level{

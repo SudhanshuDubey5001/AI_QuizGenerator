@@ -3,62 +3,67 @@ package com.sudhanshu.quizapp.core.utils
 object MockResponses {
 
     val response1 = "{\n" +
-            "   \"quiz\":[\n" +
-            "      {\n" +
-            "         \"question\":\"Which movie features the iconic line, \\\"May the Force be with you\\\"?\",\n" +
-            "         \"options\":[\n" +
-            "            \"Star Wars: A New Hope\",\n" +
-            "            \"The Lord of the Rings: The Fellowship of the Ring\",\n" +
-            "            \"Harry Potter and the Sorcerer's Stone\",\n" +
-            "            \"Avengers: Endgame\"\n" +
-            "         ],\n" +
-            "         \"correct_answer\":\"Star Wars: A New Hope\",\n" +
-            "         \"explanation\":\"The line \\\"May the Force be with you\\\" is a signature phrase from the Star Wars franchise and is uttered in the first movie, Star Wars: A New Hope.\"\n" +
-            "      },\n" +
-            "      {\n" +
-            "         \"question\":\"Which TV show follows the adventures of a group of friends living in New York City?\",\n" +
-            "         \"options\":[\n" +
-            "            \"Friends\",\n" +
-            "            \"The Big Bang Theory\",\n" +
-            "            \"Seinfeld\",\n" +
-            "            \"Breaking Bad\"\n" +
-            "         ],\n" +
-            "         \"correct_answer\":\"Friends\",\n" +
-            "         \"explanation\":\"Friends is a popular American sitcom that follows the lives of six friends living in New York City.\"\n" +
-            "      },\n" +
-            "      {\n" +
-            "         \"question\":\"What is the main greenhouse gas contributing to climate change?\",\n" +
-            "         \"options\":[\n" +
-            "            \"Carbon dioxide\",\n" +
-            "            \"Methane\",\n" +
-            "            \"Nitrous oxide\",\n" +
-            "            \"Water vapor\"\n" +
-            "         ],\n" +
-            "         \"correct_answer\":\"Carbon dioxide\",\n" +
-            "         \"explanation\":\"Carbon dioxide is the primary greenhouse gas responsible for climate change, accounting for about 60% of the greenhouse effect.\"\n" +
-            "      },\n" +
-            "      {\n" +
-            "         \"question\":\"Which psychological phenomenon refers to the tendency for people to remember information that confirms their existing beliefs?\",\n" +
-            "         \"options\":[\n" +
-            "            \"Confirmation bias\",\n" +
-            "            \"Cognitive dissonance\",\n" +
-            "            \"Self-serving bias\",\n" +
-            "            \"Availability heuristic\"\n" +
-            "         ],\n" +
-            "         \"correct_answer\":\"Confirmation bias\",\n" +
-            "         \"explanation\":\"Confirmation bias is a cognitive bias that leads people to seek out and interpret information that supports their existing beliefs, while ignoring or dismissing evidence that contradicts them.\"\n" +
-            "      },\n" +
-            "      {\n" +
-            "         \"question\":\"Who is the author of the book \\\"Thinking, Fast and Slow\\\"?\",\n" +
-            "         \"options\":[\n" +
-            "            \"Daniel Kahneman\",\n" +
-            "            \"Malcolm Gladwell\",\n" +
-            "            \"Steven Pinker\",\n" +
-            "            \"Yuval Noah Harari\"\n" +
-            "         ],\n" +
-            "         \"correct_answer\":\"Daniel Kahneman\",\n" +
-            "         \"explanation\":\"Thinking, Fast and Slow is a book written by Daniel Kahneman, a Nobel Prize-winning psychologist, which explores the two systems of thinking: System 1, the fast and intuitive system, and System 2, the slow and deliberative system.\"\n" +
-            "      }\n" +
-            "   ]\n" +
+            "  \"questions\":[\n" +
+            "    {\n" +
+            "      \"question\":\"Which country has won the most Olympic gold medals?\",\n" +
+            "      \"difficulty\":\"MEDIUM\",\n" +
+            "      \"correct_answer\":\"United States\",\n" +
+            "      \"options\":[\n" +
+            "        \"United States\",\n" +
+            "        \"Soviet Union\",\n" +
+            "        \"China\",\n" +
+            "        \"Great Britain\"\n" +
+            "      ],\n" +
+            "      \"explanation\":\"The United States has won the most Olympic gold medals with a total of 2,834 medals as of the 2020 Summer Olympics.\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"question\":\"Who is the most decorated Olympian of all time?\",\n" +
+            "      \"difficulty\":\"MEDIUM\",\n" +
+            "      \"correct_answer\":\"Michael Phelps\",\n" +
+            "      \"options\":[\n" +
+            "        \"Michael Phelps\",\n" +
+            "        \"Usain Bolt\",\n" +
+            "        \"Carl Lewis\",\n" +
+            "        \"Larisa Latynina\"\n" +
+            "      ],\n" +
+            "      \"explanation\":\"Michael Phelps is the most decorated Olympian of all time with a total of 28 medals, including 23 gold medals.\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"question\":\"Which sport has been included in every Summer Olympic Games?\",\n" +
+            "      \"difficulty\":\"MEDIUM\",\n" +
+            "      \"correct_answer\":\"Athletics\",\n" +
+            "      \"options\":[\n" +
+            "        \"Athletics\",\n" +
+            "        \"Swimming\",\n" +
+            "        \"Gymnastics\",\n" +
+            "        \"Football\"\n" +
+            "      ],\n" +
+            "      \"explanation\":\"Athletics, also known as track and field, has been included in every Summer Olympic Games since the first Games in 1896.\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"question\":\"Which country hosted the first Winter Olympic Games?\",\n" +
+            "      \"difficulty\":\"MEDIUM\",\n" +
+            "      \"correct_answer\":\"France\",\n" +
+            "      \"options\":[\n" +
+            "        \"France\",\n" +
+            "        \"Switzerland\",\n" +
+            "        \"Canada\",\n" +
+            "        \"Norway\"\n" +
+            "      ],\n" +
+            "      \"explanation\":\"The first Winter Olympic Games were held in Chamonix, France in 1924.\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"question\":\"Which athlete has won the most Olympic medals in a single Games?\",\n" +
+            "      \"difficulty\":\"MEDIUM\",\n" +
+            "      \"correct_answer\":\"Michael Phelps\",\n" +
+            "      \"options\":[\n" +
+            "        \"Michael Phelps\",\n" +
+            "        \"Carl Lewis\",\n" +
+            "        \"Paavo Nurmi\",\n" +
+            "        \"Fanny Blankers-Koen\"\n" +
+            "      ],\n" +
+            "      \"explanation\":\"Michael Phelps won a total of 8 gold medals and 2 silver medals at the 2008 Summer Olympics in Beijing, China.\"\n" +
+            "    }\n" +
+            "  ]\n" +
             "}"
 }

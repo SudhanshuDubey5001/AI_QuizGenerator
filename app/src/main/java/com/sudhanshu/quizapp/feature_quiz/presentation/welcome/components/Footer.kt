@@ -8,20 +8,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.sudhanshu.quizapp.core.utils.Screens
+import com.sudhanshu.quizapp.core.utils.Utils
 
 @Composable
-fun Footer(fontFamily: FontFamily,navController: NavController) {
+fun Footer(navigateToTopicScreen: () -> Unit) {
+    val fontFamily = Utils.fontFamily
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         AppButton(text = "Start", fontFamily = fontFamily, onClick = {
-            navController.navigate(Screens.TOPICS)
+            navigateToTopicScreen()
         })
 
         Spacer(modifier = Modifier.height(8.dp))

@@ -1,5 +1,7 @@
 package com.sudhanshu.quizapp.feature_quiz.presentation.topics.components
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -19,40 +21,30 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import com.sudhanshu.quizapp.R
 import com.sudhanshu.quizapp.core.presentation.UiEvent
 import com.sudhanshu.quizapp.core.presentation.components.QuizAppNavigationBar
-import com.sudhanshu.quizapp.core.presentation.components.SetStatusBarColor
 import com.sudhanshu.quizapp.core.utils.Screens
-import com.sudhanshu.quizapp.feature_quiz.data.data_source.GlobalData
 import com.sudhanshu.quizapp.feature_quiz.presentation.topics.TopicScreenVM
 import com.sudhanshu.quizapp.feature_quiz.presentation.topics.TopicsScreenEvents
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopicScreen(
-    navController: NavController,
+    onNavigate: (route: String) -> Unit,
     viewModel: TopicScreenVM = hiltViewModel()
 ) {
     fun onClickBackButton() {
-        navController.popBackStack()
+        onNavigate(Screens.BACK)
     }
 
-    val fontFamily = FontFamily(
-        Font(
-            R.font.comfortaa, FontWeight.Normal
-        )
-    )
+    fun onClickNextScreenButton(){
+        onNavigate(Screens.OPTIONS)
+    }
 
     val snakbarhostState = remember { SnackbarHostState() }
     val topicProps = viewModel.topicProps.value
@@ -60,7 +52,8 @@ fun TopicScreen(
     val popularTopics = viewModel.popularTopicsStateHolder
 
     val scrollState = rememberScrollState()
-    val scope = rememberCoroutineScope()
+    val focus = LocalFocusManager.current
+    val interactionSource = remember { MutableInteractionSource() }
 
     LaunchedEffect(Unit) {
         viewModel.uiEvents.collectLatest { event ->
@@ -84,7 +77,7 @@ fun TopicScreen(
                     modifier = Modifier.padding(bottom = 40.dp),
                     onClick = {
                         if (topicsList.isNotEmpty())
-                            navController.navigate(Screens.OPTIONS)
+                            onClickNextScreenButton()
                     },
                     elevation = FloatingActionButtonDefaults.elevation(10.dp),
                     containerColor = MaterialTheme.colorScheme.tertiary
@@ -97,9 +90,16 @@ fun TopicScreen(
         Modifier.padding(it)
         Column {
             QuizAppNavigationBar(heading = "Topic", onClickBackButton = { onClickBackButton() })
-            Column(modifier = Modifier.verticalScroll(scrollState)) {
+            Column(modifier = Modifier
+                .verticalScroll(scrollState)
+                .clickable(
+                    indication = null,
+                    interactionSource = interactionSource
+                ) {
+                    focus.clearFocus()
+                }
+            ) {
                 TopicInput(
-                    fontFamily = fontFamily,
                     inputProp = topicProps,
                     onValueChanged = {
                         viewModel.onEvents(TopicsScreenEvents.OnTopicInputEntered(it))
@@ -109,7 +109,6 @@ fun TopicScreen(
                     }
                 )
                 TopicsAddedDisplay(
-                    fontFamily = fontFamily,
                     topicsList = topicsList,
                     onDeletePressed = { index ->
                         viewModel.onEvents(TopicsScreenEvents.OnTopicDeletePressed(index))
@@ -117,7 +116,6 @@ fun TopicScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 PopularTopicsCardView(
                     topicsList = popularTopics,
-                    fontFamily = fontFamily,
                     onPressed = { topicState ->
                         viewModel.onEvents(
                             TopicsScreenEvents.OnTopicSelectedFromPopularTopics(

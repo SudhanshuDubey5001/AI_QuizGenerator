@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -27,31 +29,62 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = Screens.TOPICS) {
+                    NavHost(navController = navController, startDestination = Screens.WELCOME) {
                         composable(
                             route = Screens.WELCOME
-                        ){
-                            WelcomeScreen(navController = navController)
+                        ) {
+                            WelcomeScreen(onNavigate = { route ->
+                                navController.navigate(route)
+                            })
                         }
                         composable(
                             route = Screens.TOPICS
-                        ){
-                            TopicScreen(navController = navController)
+                        ) {
+                            TopicScreen(onNavigate = { route ->
+                                when (route) {
+                                    Screens.BACK -> navController.popBackStack()
+                                    else -> navController.navigate(route)
+                                }
+                            })
                         }
                         composable(
                             route = Screens.OPTIONS
-                        ){
-                            OptionScreen(navController = navController)
+                        ) {
+                            OptionScreen(onNavigate = { route ->
+                                when (route) {
+                                    Screens.BACK -> navController.popBackStack()
+                                    else -> navController.navigate(route)
+                                }
+                            })
                         }
                         composable(
                             route = Screens.LOADING
-                        ){
-                            LoadingScreen(navController = navController)
+                        ) {
+                            LoadingScreen(onNavigate = { route ->
+                                navController.navigate(route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            })
                         }
                         composable(
                             route = Screens.QUIZ
-                        ){
-                            QuizScreen(navController = navController)
+                        ) {
+                            QuizScreen(onNavigate = { route ->
+                                when (route) {
+                                    Screens.BACK -> navController.popBackStack()
+                                    else -> navController.navigate(route) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
+                            })
                         }
                     }
                 }

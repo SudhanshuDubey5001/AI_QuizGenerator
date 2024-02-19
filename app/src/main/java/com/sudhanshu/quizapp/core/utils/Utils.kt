@@ -17,4 +17,18 @@ object Utils {
             R.font.comfortaa, FontWeight.Normal
         )
     )
+    fun extractJson(inputString: String): String {
+        // Find the starting and ending index of the JSON object
+        val startIndex = inputString.indexOf("{")
+        val endIndex = inputString.lastIndexOf("}")
+
+        return if (startIndex != -1 && endIndex != -1 && endIndex > startIndex) {
+            // Extract the JSON substring
+            inputString.substring(startIndex, endIndex + 1)
+        } else {
+            // JSON object not found
+            // TODO: Do it again, 3 times then show error page
+            inputString
+        }
+    }
 }

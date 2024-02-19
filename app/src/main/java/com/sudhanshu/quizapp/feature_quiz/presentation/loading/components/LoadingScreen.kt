@@ -38,7 +38,7 @@ import kotlinx.coroutines.flow.collectLatest
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoadingScreen(
-    navController: NavController,
+    onNavigate: (route: String) -> Unit,
     viewModel: LoadingScreenVM = hiltViewModel()
 ) {
 
@@ -49,7 +49,7 @@ fun LoadingScreen(
         viewModel.uiEvent.collectLatest { event ->
             when(event){
                 is UiEvent.navigate -> {
-                    navController.navigate(event.screen)
+                    onNavigate(event.screen)
                 }
                 is UiEvent.showSnackBar -> Unit
             }

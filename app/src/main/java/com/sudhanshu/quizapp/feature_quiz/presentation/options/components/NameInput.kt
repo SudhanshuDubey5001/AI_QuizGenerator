@@ -20,11 +20,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sudhanshu.quizapp.core.utils.Utils
 import com.sudhanshu.quizapp.feature_quiz.domain.model.Configuration
+import com.sudhanshu.quizapp.feature_quiz.domain.model.User
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NameInput(
-    config: Configuration,
+    user: User,
     onValueChanged: (value: String) -> Unit,
 ) {
     val focus = LocalFocusManager.current
@@ -44,7 +45,7 @@ fun NameInput(
         colors = TextFieldDefaults.outlinedTextFieldColors(
             containerColor = Color.White
         ),
-        value = config.name,
+        value = user.name,
         onValueChange = { newValue -> onValueChanged(newValue) },
         textStyle = TextStyle(
             fontSize = fontSize,
