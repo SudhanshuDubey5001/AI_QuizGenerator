@@ -62,8 +62,8 @@ class QuizScreenVM @Inject constructor(
                 val quizData = Gson().fromJson(response, Quiz::class.java)
                 Utils.log("More questions = $quizData")
                 quizDataInstance.setQuizData(quizData)
-                incrementTriggerIndex()
                 resetRetryCount()
+                _loadingMoreQuestions.value = LoadingState.IDLE
             } catch (e: Exception) {
                 if(retryCount.value<=AppConfigurationConstants.GENERATIVE_AI_API_CALL_RETRY_LIMIT)
                     _loadingMoreQuestions.value = LoadingState.ERROR
@@ -72,18 +72,14 @@ class QuizScreenVM @Inject constructor(
                 _uiEvent.emit(UiEvent.showSnackBar(ErrorMessages.FAILED_MORE_QUIZ_QUESTIONS_GENERATE))
                 Utils.log(e.toString())
             }
-            _loadingMoreQuestions.value = LoadingState.IDLE
         }
     }
 
     fun onEvents(event: QuizScreenEvents) {
         when (event) {
-            is QuizScreenEvents.OnSelectOption -> {
-
-            }
-
             is QuizScreenEvents.SendPageSelectedEvent -> {
                 if (event.page == triggerGenerateMoreQuestionIndex.value) {
+                    incrementTriggerIndex()
                     generateMoreQuestions()
                 }
             }
@@ -91,6 +87,18 @@ class QuizScreenVM @Inject constructor(
             QuizScreenEvents.RetryLoadingMoreQuestions -> {
                 generateMoreQuestions()
                 incrementRetryCount()
+            }
+
+            is QuizScreenEvents.OnOptionSelected -> {
+                quizDataInstance.setOptionSelected(
+                    questionIndex = event.questionIndex,
+                    optionSelectedIndex = event.optionIndex,
+                    visitedStatus = event.questionVisitedStateChange
+                )
+                userDataInstance.addUserAnswer(
+                    questionIndex = event.questionIndex,
+                    value = quizData[event.questionIndex].options[event.optionIndex]
+                )
             }
         }
     }
@@ -100,7 +108,8 @@ class QuizScreenVM @Inject constructor(
     }
 
     private fun incrementTriggerIndex() {
-        triggerGenerateMoreQuestionIndex.value + AppConfigurationConstants.QUESTIONS_COUNT_PER_API_CALL
+        triggerGenerateMoreQuestionIndex.value += AppConfigurationConstants.QUESTIONS_COUNT_PER_API_CALL
+        Utils.log("Trigger count = "+triggerGenerateMoreQuestionIndex.value)
     }
 
     private fun resetRetryCount(){

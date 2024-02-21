@@ -11,10 +11,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.compose.QuizAppTheme
+import com.sudhanshu.quizapp.core.utils.AppConfigurationConstants
 import com.sudhanshu.quizapp.core.utils.Screens
 import com.sudhanshu.quizapp.feature_quiz.presentation.loading.components.LoadingScreen
 import com.sudhanshu.quizapp.feature_quiz.presentation.options.components.OptionScreen
 import com.sudhanshu.quizapp.feature_quiz.presentation.quiz.components.QuizScreen
+import com.sudhanshu.quizapp.feature_quiz.presentation.result.ResultScreen
 import com.sudhanshu.quizapp.feature_quiz.presentation.topics.components.TopicScreen
 import com.sudhanshu.quizapp.feature_quiz.presentation.welcome.components.WelcomeScreen
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,7 +31,10 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = Screens.WELCOME) {
+                    NavHost(
+                        navController = navController,
+                        startDestination = AppConfigurationConstants.ENTRY_SCREEN
+                    ) {
                         composable(
                             route = Screens.WELCOME
                         ) {
@@ -74,6 +79,22 @@ class MainActivity : ComponentActivity() {
                             route = Screens.QUIZ
                         ) {
                             QuizScreen(onNavigate = { route ->
+                                when (route) {
+                                    Screens.BACK -> navController.popBackStack()
+                                    else -> navController.navigate(route) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
+                            })
+                        }
+                        composable(
+                            route = Screens.RESULT
+                        ) {
+                            ResultScreen(onNavigate = { route ->
                                 when (route) {
                                     Screens.BACK -> navController.popBackStack()
                                     else -> navController.navigate(route) {

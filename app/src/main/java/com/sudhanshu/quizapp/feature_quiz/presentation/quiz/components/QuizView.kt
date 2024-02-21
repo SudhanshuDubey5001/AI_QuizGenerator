@@ -1,5 +1,7 @@
 package com.sudhanshu.quizapp.feature_quiz.presentation.quiz.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +12,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,11 +27,11 @@ import com.sudhanshu.quizapp.feature_quiz.domain.model.Question
 @Composable
 fun QuizView(
     quiz: Question,
+    onOptionSelect: (optionIndex: Int) -> Unit
 ) {
     val fontColor = MaterialTheme.colorScheme.onSurface
     val fontFamily = Utils.fontFamily
     val fontSize = 18.sp
-
 
     Card(
         modifier = Modifier
@@ -50,11 +53,16 @@ fun QuizView(
                 color = fontColor
             )
             Spacer(modifier = Modifier.height(24.dp))
-            quiz.options.forEach { option ->
+            quiz.options.forEachIndexed { index, option ->
                 OptionView(
+                    index = index,
                     option = option,
                     fontSize = fontSize,
-                    fontColor = fontColor
+                    fontColor = fontColor,
+                    optionSelected = quiz.optionSelected,
+                    onSelected = { optionIndex ->
+                        onOptionSelect(optionIndex)
+                    }
                 )
                 Spacer(modifier = Modifier.height(12.dp))
             }
@@ -64,16 +72,25 @@ fun QuizView(
 
 @Composable
 fun OptionView(
+    index: Int,
     option: String,
     fontColor: Color,
-    fontSize: TextUnit
+    fontSize: TextUnit,
+    optionSelected: Int,
+    onSelected: (optionIndex: Int) -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onSelected(index)
+            }
     ) {
         RadioButton(
             modifier = Modifier.padding(end = 10.dp),
-            selected = false, onClick = { /*TODO*/ })
+            selected = (index == optionSelected),
+            onClick = { onSelected(index) },
+        )
         Text(
             modifier = Modifier.align(Alignment.CenterVertically),
             text = option,

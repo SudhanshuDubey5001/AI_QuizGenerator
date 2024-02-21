@@ -9,7 +9,13 @@ data class Question(
     val difficulty: String,
     val correct_answer: String,
     val options: List<String>,
-    val explanation: String
+    val explanation: String,
+    val optionSelected: Int = 0,
+    val questionVisitedStatus: Boolean = false
 )
+
+enum class QuestionVisitedStates{
+    NOT_VISITED, VISITED
+}
 
 

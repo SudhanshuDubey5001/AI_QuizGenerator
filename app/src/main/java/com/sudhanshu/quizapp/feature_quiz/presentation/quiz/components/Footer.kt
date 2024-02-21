@@ -2,6 +2,7 @@ package com.sudhanshu.quizapp.feature_quiz.presentation.quiz.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -38,6 +39,7 @@ fun Footer(
             pagerState.animateScrollToPage(pagerState.currentPage + 1)
         }
     }
+
     fun goToPreviousPage() {
         scope.launch {
             pagerState.animateScrollToPage(pagerState.currentPage - 1)
@@ -48,19 +50,24 @@ fun Footer(
     Row(
         modifier = Modifier.fillMaxWidth(),
     ) {
-        Icon(
+        Box(
             modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .weight(1f)
-                .size(sizeOfArrows)
-                .clickable { goToPreviousPage() },
-            imageVector = Icons.Default.KeyboardArrowLeft,
-            contentDescription = "previous question"
-        )
+                .weight(1f),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                modifier = Modifier
+                    .size(sizeOfArrows)
+                    .clickable { goToPreviousPage() },
+                imageVector = Icons.Default.KeyboardArrowLeft,
+                contentDescription = "previous question"
+            )
+        }
 
         Card(
             modifier = Modifier
-                .weight(1f)
+                .weight(2f)
                 .clickable {
                     scope.launch {
                         pagerState.animateScrollToPage(pagerState.currentPage + 1)
@@ -74,22 +81,27 @@ fun Footer(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 40.dp, vertical = 16.dp),
-                text = "Next",
+                    .padding(vertical = 16.dp),
+                text = "Submit",
                 fontFamily = Utils.fontFamily,
-                fontSize = 22.sp,
+                fontSize = 14.sp,
                 textAlign = TextAlign.Center
             )
         }
 
-        Icon(
+        Box(
             modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .weight(1f)
-                .size(sizeOfArrows)
-                .clickable { goToNextPage() },
-            imageVector = Icons.Default.KeyboardArrowRight,
-            contentDescription = "previous question"
-        )
+                .weight(1f),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                modifier = Modifier
+                    .size(sizeOfArrows)
+                    .clickable { goToNextPage() },
+                imageVector = Icons.Default.KeyboardArrowRight,
+                contentDescription = "next question"
+            )
+        }
     }
 }

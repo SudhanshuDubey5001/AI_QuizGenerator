@@ -28,9 +28,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sudhanshu.quizapp.core.presentation.UiEvent
 import com.sudhanshu.quizapp.core.presentation.components.QuizAppNavigationBar
-import com.sudhanshu.quizapp.core.utils.ErrorMessages
 import com.sudhanshu.quizapp.core.utils.Screens
 import com.sudhanshu.quizapp.core.utils.Utils
+import com.sudhanshu.quizapp.feature_quiz.domain.model.QuestionVisitedStates
 import com.sudhanshu.quizapp.feature_quiz.presentation.quiz.QuizScreenEvents
 import com.sudhanshu.quizapp.feature_quiz.presentation.quiz.QuizScreenVM
 import kotlinx.coroutines.flow.collectLatest
@@ -59,6 +59,10 @@ fun QuizScreen(
         onNavigate(Screens.RESULT)
     }
 
+    fun scrollToNextPage() {
+        scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
+    }
+
     LaunchedEffect(Unit) {
         scope.launch {
             snapshotFlow { pagerState.currentPage }.collect { page ->
@@ -74,7 +78,9 @@ fun QuizScreen(
                         )
                     }
 
-                    is UiEvent.navigate -> Unit
+                    is UiEvent.navigate -> {
+
+                    }
                 }
             }
         }
@@ -101,28 +107,39 @@ fun QuizScreen(
                     fontSize = 32.sp,
                 )
 
-                HorizontalPager(
-                    modifier = Modifier,
-                    state = pagerState,
-                ) { page ->
-                    QuizView(quiz = quizData[page])
-                }
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                Footer(pagerState = pagerState)
-
-                Spacer(modifier = Modifier.height(30.dp))
-
                 ScrollableQuestionsView(
+                    quizData = quizData,
                     loading = isLoadingMoreQuestions,
-                    pagerState = pagerState,
+                    questionsPagerState = pagerState,
                     onRetry = {
                         viewModel.onEvents(QuizScreenEvents.RetryLoadingMoreQuestions)
                     }
                 )
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                HorizontalPager(
+                    modifier = Modifier,
+                    state = pagerState,
+                    beyondBoundsPageCount = 5
+                ) { page ->
+                    QuizView(quiz = quizData[page], onOptionSelect = { optionIndex ->
+                        viewModel.onEvents(
+                            QuizScreenEvents.OnOptionSelected(
+                                questionIndex = page,
+                                optionIndex = optionIndex,
+                                questionVisitedStateChange = true
+                            )
+                        )
+                        scrollToNextPage()
+                    })
+                }
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                Footer(pagerState = pagerState)
+
+                Spacer(modifier = Modifier.height(30.dp))
             }
         }
 

@@ -33,7 +33,7 @@ class TopicScreenVM @Inject constructor(
     private val _uiEvents = MutableSharedFlow<UiEvent>()
     val uiEvents = _uiEvents.asSharedFlow()
 
-//    val topicsSelected = globalData.topicsSelected
+    //    val topicsSelected = globalData.topicsSelected
     val topicsSelected = quizConfig.configuration.value.topics
 
     private val _popularTopicsStateHolder = mutableStateListOf<PopularTopicState>()
@@ -80,7 +80,7 @@ class TopicScreenVM @Inject constructor(
                 val response = callGeminiAPI(prompt)
                 Utils.log(response)
                 _topicProps.value = _topicProps.value.copy(
-                    topicState = if(response.lowercase() == "yes") TopicState.VALID else TopicState.INVALID
+                    topicState = if (response.lowercase() == "yes") TopicState.VALID else TopicState.INVALID
                 )
             } catch (e: PromptBlockedException) {
                 //when user uses obscene language or something offensive or generating a quiz is not possible
@@ -128,9 +128,9 @@ class TopicScreenVM @Inject constructor(
         updatePopularTopicState(topicState.topic)
     }
 
-    private fun updatePopularTopicState(topic:String){
+    private fun updatePopularTopicState(topic: String) {
         _popularTopicsStateHolder.forEachIndexed { index, topicState ->
-            if(topicState.topic == topic){
+            if (topicState.topic == topic) {
                 _popularTopicsStateHolder[index] = PopularTopicState(
                     topic = topicState.topic,
                     isSelected = !topicState.isSelected
@@ -169,8 +169,10 @@ class TopicScreenVM @Inject constructor(
             }
         }
     }
+
     private suspend fun callGeminiAPI(prompt: String): String {
         val response = aiOperations.getResponseFromGenerativeAI(prompt = prompt)
         return response
     }
 }
+

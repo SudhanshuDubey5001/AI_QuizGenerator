@@ -10,10 +10,12 @@ import javax.inject.Singleton
 @Singleton
 class UserData @Inject constructor() {
 
-    private val _answers = mutableStateListOf<Int>()
+    private val _answersMap = mutableStateOf(mutableMapOf<Int, String>())
 
     private val _user = mutableStateOf(
-        User(answers = _answers)
+        User(
+            answers = _answersMap.value
+        )
     )
     val user: State<User> = _user
 
@@ -23,8 +25,8 @@ class UserData @Inject constructor() {
         )
     }
 
-    fun addUserAnswer(value: Int) {
-        _answers.add(value)
+    fun addUserAnswer(questionIndex: Int, value: String) {
+        _answersMap.value[questionIndex] = value
     }
 
     fun setScore(score: Int) {
