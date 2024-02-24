@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.ai.client.generativeai.type.PromptBlockedException
 import com.sudhanshu.quizapp.core.presentation.UiEvent
+import com.sudhanshu.quizapp.core.utils.AppConfigurationConstants
 import com.sudhanshu.quizapp.core.utils.Utils
 import com.sudhanshu.quizapp.core.utils.Prompts
 import com.sudhanshu.quizapp.feature_quiz.data.data_source.QuizConfig
@@ -39,9 +40,7 @@ class TopicScreenVM @Inject constructor(
     private val _popularTopicsStateHolder = mutableStateListOf<PopularTopicState>()
     val popularTopicsStateHolder: SnapshotStateList<PopularTopicState> = _popularTopicsStateHolder
 
-    private val DEBOUNCE_TIME_MS = 2000L
-
-    var generativeAIJob: Job = Job()
+    private var generativeAIJob: Job = Job()
 
     init {
         PopularTopics.topics.forEach { topic ->
@@ -75,7 +74,7 @@ class TopicScreenVM @Inject constructor(
         }
         val prompt = Prompts.validatePrompt(topic)
         generativeAIJob = viewModelScope.launch {
-            delay(DEBOUNCE_TIME_MS)
+            delay(AppConfigurationConstants.DEBOUNCE_TIME_MS)
             try {
                 val response = callGeminiAPI(prompt)
                 Utils.log(response)
@@ -171,7 +170,7 @@ class TopicScreenVM @Inject constructor(
     }
 
     private suspend fun callGeminiAPI(prompt: String): String {
-        val response = aiOperations.getResponseFromGenerativeAI(prompt = prompt)
+        val response = aiOperations.gAI_validatePromptForQuizTopic(prompt = prompt)
         return response
     }
 }

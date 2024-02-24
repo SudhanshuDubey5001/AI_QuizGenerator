@@ -42,9 +42,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ScrollableQuestionsView(
     quizData: SnapshotStateList<Question>,
-    loading: LoadingState,
     questionsPagerState: PagerState,
-    onRetry: () -> Unit,
 ) {
     val questionsPageIndex = questionsPagerState.currentPage
 
@@ -122,19 +120,4 @@ fun ScrollableQuestionsView(
             }
         }
     }
-//    if (loading == LoadingState.LOADING) {
-//        GifView(
-//            data = R.drawable.loadinggif,
-//            Modifier
-//                .size(54.dp)
-//        )
-//    } else if (loading == LoadingState.ERROR) {
-//        Icon(
-//            modifier = Modifier
-//                .size(54.dp)
-//                .clickable { onRetry() },
-//            imageVector = Icons.Default.Refresh,
-//            contentDescription = "retry loading questions"
-//        )
-//    }
 }

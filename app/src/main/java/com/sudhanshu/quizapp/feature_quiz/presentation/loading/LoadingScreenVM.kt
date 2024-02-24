@@ -81,7 +81,7 @@ class LoadingScreenVM @Inject constructor(
     private fun generateQuiz(prompt: String) {
         viewModelScope.launch {
             try {
-                val response = aiOperations.getResponseFromGenerativeAI(prompt)
+                val response = aiOperations.gAI_validatePromptForQuizTopic(prompt)
                 Utils.log("Corrected format == $response")
                 val quiz = Gson().fromJson(response, Quiz::class.java)
                 Utils.log("Quiz = $quiz")

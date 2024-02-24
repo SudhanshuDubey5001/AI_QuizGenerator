@@ -29,7 +29,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Footer(
-    pagerState: PagerState
+    pagerState: PagerState,
+    onClickSubmitButton: () -> Unit
 ) {
     val sizeOfArrows = 42.dp
     val scope = rememberCoroutineScope()
@@ -69,9 +70,7 @@ fun Footer(
             modifier = Modifier
                 .weight(2f)
                 .clickable {
-                    scope.launch {
-                        pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                    }
+                    onClickSubmitButton()
                 },
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.tertiary

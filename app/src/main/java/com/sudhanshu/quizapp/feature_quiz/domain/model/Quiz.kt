@@ -5,11 +5,11 @@ data class Quiz(
 )
 
 data class Question(
-    val question: String,
-    val difficulty: String,
-    val correct_answer: String,
-    val options: List<String>,
-    val explanation: String,
+    val question: String = "",
+    val difficulty: String = "",
+    val correct_answer: String = "",
+    val options: List<String> = emptyList(),
+    val explanation: String = "",
     val optionSelected: Int = 0,
     val questionVisitedStatus: Boolean = false
 )

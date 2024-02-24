@@ -4,7 +4,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.google.gson.Gson
 import com.sudhanshu.quizapp.core.utils.MockResponses
-import com.sudhanshu.quizapp.feature_quiz.domain.model.QuestionVisitedStates
 import com.sudhanshu.quizapp.feature_quiz.domain.model.Question
 import com.sudhanshu.quizapp.feature_quiz.domain.model.Quiz
 import javax.inject.Inject
@@ -31,7 +30,8 @@ class QuizData @Inject constructor() {
     fun setOptionSelected(
         questionIndex: Int,
         optionSelectedIndex: Int,
-        visitedStatus: Boolean) {
+        visitedStatus: Boolean
+    ) {
         _quizQuestions[questionIndex] = _quizQuestions[questionIndex].copy(
             optionSelected = optionSelectedIndex,
             questionVisitedStatus = visitedStatus
