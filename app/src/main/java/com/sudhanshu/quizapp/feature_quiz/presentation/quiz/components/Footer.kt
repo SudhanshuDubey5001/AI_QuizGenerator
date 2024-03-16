@@ -51,56 +51,56 @@ fun Footer(
     Row(
         modifier = Modifier.fillMaxWidth(),
     ) {
-        Box(
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .weight(1f),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                modifier = Modifier
-                    .size(sizeOfArrows)
-                    .clickable { goToPreviousPage() },
-                imageVector = Icons.Default.KeyboardArrowLeft,
-                contentDescription = "previous question"
-            )
-        }
+//        Box(
+//            modifier = Modifier
+//                .align(Alignment.CenterVertically)
+//                .weight(1f),
+//            contentAlignment = Alignment.Center
+//        ) {
+//            Icon(
+//                modifier = Modifier
+//                    .size(sizeOfArrows)
+//                    .clickable { goToPreviousPage() },
+//                imageVector = Icons.Default.KeyboardArrowLeft,
+//                contentDescription = "previous question"
+//            )
+//        }
 
-        Card(
-            modifier = Modifier
-                .weight(2f)
-                .clickable {
-                    onClickSubmitButton()
-                },
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.tertiary
-            ),
-            elevation = CardDefaults.cardElevation(10.dp),
-        ) {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                text = "Submit",
-                fontFamily = Utils.fontFamily,
-                fontSize = 14.sp,
-                textAlign = TextAlign.Center
-            )
-        }
+//        Card(
+//            modifier = Modifier
+//                .weight(2f)
+//                .clickable {
+//                    onClickSubmitButton()
+//                },
+//            colors = CardDefaults.cardColors(
+//                containerColor = MaterialTheme.colorScheme.tertiary
+//            ),
+//            elevation = CardDefaults.cardElevation(10.dp),
+//        ) {
+//            Text(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(vertical = 16.dp),
+//                text = "Finish",
+//                fontFamily = Utils.fontFamily,
+//                fontSize = 14.sp,
+//                textAlign = TextAlign.Center
+//            )
+//        }
 
-        Box(
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .weight(1f),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                modifier = Modifier
-                    .size(sizeOfArrows)
-                    .clickable { goToNextPage() },
-                imageVector = Icons.Default.KeyboardArrowRight,
-                contentDescription = "next question"
-            )
-        }
+//        Box(
+//            modifier = Modifier
+//                .align(Alignment.CenterVertically)
+//                .weight(1f),
+//            contentAlignment = Alignment.Center
+//        ) {
+//            Icon(
+//                modifier = Modifier
+//                    .size(sizeOfArrows)
+//                    .clickable { goToNextPage() },
+//                imageVector = Icons.Default.KeyboardArrowRight,
+//                contentDescription = "next question"
+//            )
+//        }
     }
 }

@@ -72,7 +72,7 @@ class QuizScreenVM @Inject constructor(
             is QuizScreenEvents.SendPageSelectedEvent -> {
                 generateQuestionsJob?.let { if(it.isActive) return }
                 if ((event.page + 4) >= quizData.size) {
-                    generateMoreQuestions()
+//                    generateMoreQuestions()
                 }
             }
 
@@ -119,7 +119,7 @@ class QuizScreenVM @Inject constructor(
             topics = topics,
             level = level
         )
-        val response = aiOperations.gAI_validatePromptForQuizTopic(prompt)
+        val response = aiOperations.gAI_generateAIResponse(prompt)
         Utils.log(response)
         return Gson().fromJson(response, Quiz::class.java)
     }

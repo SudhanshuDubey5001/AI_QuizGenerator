@@ -186,4 +186,21 @@ object MockResponses {
             "    }\n" +
             "  ]\n" +
             "}"
+
+    val resources = "{\n" +
+            "\"resources\": [\n" +
+            "{\n" +
+            "\"url\": \"https://www.shakira.com/\",\n" +
+            "\"explanation\": \"Shakira Official Website: The official website of Shakira is a one-stop shop for all things related to the Colombian singer. You can find her latest music, tour dates, biography, photos, and more.\"\n" +
+            "},\n" +
+            "{\n" +
+            "\"url\": \"https://www.khanacademy.org/science/physics\",\n" +
+            "\"explanation\": \"Khan Academy Physics: Khan Academy offers a comprehensive physics curriculum with video lectures, practice exercises, and articles.  Content covers a wide range of topics from basic mechanics to advanced quantum mechanics, making it a valuable resource for learners of all levels.\"\n" +
+            "},\n" +
+            "{\n" +
+            "\"url\": \"https://www.nasa.gov/\",\n" +
+            "\"explanation\": \"NASA (.gov): The official website of NASA (National Aeronautics and Space Administration) is a treasure trove of information about space exploration, astronomy, and aeronautics. It features news articles, mission updates, educational resources, stunning images, and videos.\"\n" +
+            "}\n" +
+            "]\n" +
+            "}"
 }

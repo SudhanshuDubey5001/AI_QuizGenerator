@@ -7,12 +7,10 @@ import com.sudhanshu.quizapp.feature_quiz.domain.repository.AI_Operations
 class AI_OperationsImpl(
     private val generativeModel: GenerativeModel
 ) : AI_Operations{
-    override suspend fun gAI_validatePromptForQuizTopic(prompt: String) : String{
+    override suspend fun gAI_generateAIResponse(prompt: String) : String{
         Utils.log("---Calling Gemini API-----")
         val response = generativeModel.generateContent(prompt)
         //need to extract the JSON as the response can contain other strings
         return Utils.extractJson(response.text.toString().trimIndent())
     }
-
-
 }

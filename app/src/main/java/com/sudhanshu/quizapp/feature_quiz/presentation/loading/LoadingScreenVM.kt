@@ -29,9 +29,9 @@ class LoadingScreenVM @Inject constructor(
 ) : ViewModel() {
 
     private val config = quizConfig.configuration.value
+    private val topics = config.topics
 
     private val difficultyLevel = config.level
-    private val topics = config.topics
     private var topicsCombined = ""
 
     private var safety = true
@@ -81,7 +81,7 @@ class LoadingScreenVM @Inject constructor(
     private fun generateQuiz(prompt: String) {
         viewModelScope.launch {
             try {
-                val response = aiOperations.gAI_validatePromptForQuizTopic(prompt)
+                val response = aiOperations.gAI_generateAIResponse(prompt)
                 Utils.log("Corrected format == $response")
                 val quiz = Gson().fromJson(response, Quiz::class.java)
                 Utils.log("Quiz = $quiz")

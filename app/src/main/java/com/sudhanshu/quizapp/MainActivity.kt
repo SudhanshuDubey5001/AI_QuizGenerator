@@ -93,18 +93,18 @@ class MainActivity : ComponentActivity() {
                         composable(
                             route = Screens.RESULT
                         ) {
-//                            ResultScreen(onNavigate = { route ->
-//                                when (route) {
-//                                    Screens.BACK -> navController.popBackStack()
-//                                    else -> navController.navigate(route) {
-//                                        popUpTo(navController.graph.findStartDestination().id) {
-//                                            saveState = true
-//                                        }
-//                                        launchSingleTop = true
-//                                        restoreState = true
-//                                    }
-//                                }
-//                            })
+                            ResultScreen(onNavigate = { route ->
+                                when (route) {
+                                    Screens.BACK -> navController.popBackStack()
+                                    else -> navController.navigate(route) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
+                            })
                         }
                     }
                 }

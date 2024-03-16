@@ -91,6 +91,9 @@ dependencies {
 
     //GSON for JSON parsing
     implementation("com.google.code.gson:gson:2.10.1")
+
+    // Y chart for bar chart
+    implementation("co.yml:ycharts:2.1.0")
 }
 
 // Allow references to generated code

@@ -170,7 +170,7 @@ class TopicScreenVM @Inject constructor(
     }
 
     private suspend fun callGeminiAPI(prompt: String): String {
-        val response = aiOperations.gAI_validatePromptForQuizTopic(prompt = prompt)
+        val response = aiOperations.gAI_generateAIResponse(prompt = prompt)
         return response
     }
 }

@@ -10,12 +10,9 @@ data class Question(
     val correct_answer: String = "",
     val options: List<String> = emptyList(),
     val explanation: String = "",
-    val optionSelected: Int = 0,
-    val questionVisitedStatus: Boolean = false
+    val optionSelected: Int = -1,
+    val questionAttempted: Boolean = false,
+    val isCorrect: Boolean = false
 )
-
-enum class QuestionVisitedStates{
-    NOT_VISITED, VISITED
-}
 
 

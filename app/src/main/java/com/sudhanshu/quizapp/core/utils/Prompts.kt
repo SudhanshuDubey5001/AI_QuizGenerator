@@ -62,4 +62,17 @@ object Prompts {
                 "Give me a proper JSON format response. Make sure the JSON is properly written with accurate opening and closing braces and brackets and the strings are inside double quotes. Make sure you use some kind of JSON verification function to check the generated JSON and if there is any error then fix it and verify it again. \n" +
                 "I want the full response so don't cut the response in mid way. PLEASE DOUBLE CHECK THE JSON FORMATTING as it is crucial that it is 100% correct. Also, please make sure that there is nothing in the response except the JSON. "
     }
+
+    fun generateResources(
+        topics: String
+    ): String{
+        return "For the topics - $topics. Provide some website resources with a brief introduction about those websites. Strictly provide the response in JSON following the schema - \n" +
+                "{\n" +
+                "  resources: [\n" +
+                "     { url: \"url of the resource\",\n" +
+                "      explanation: \"explanation of the website resource\"\n" +
+                "     } ......more items \n" +
+                "], \n" +
+                "Keep the response in the above given format. "
+    }
 }

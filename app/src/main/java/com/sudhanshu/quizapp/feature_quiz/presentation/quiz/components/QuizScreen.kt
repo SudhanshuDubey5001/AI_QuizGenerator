@@ -120,7 +120,11 @@ fun QuizScreen(
             modifier = Modifier.fillMaxSize(),
         ) {
             QuizAppNavigationBar(
-                onClickBackButton = { onClickBackButton() }
+                onClickBackButton = { onClickBackButton() },
+                trailingText = "Finish",
+                onClickTrailingText = {
+                    onClickSubmitButton()
+                }
             )
 
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
@@ -174,7 +178,7 @@ fun QuizScreen(
                                 questionVisitedStateChange = true
                             )
                         )
-                        scrollToNextPage()
+//                        scrollToNextPage()
                     })
                 }
 

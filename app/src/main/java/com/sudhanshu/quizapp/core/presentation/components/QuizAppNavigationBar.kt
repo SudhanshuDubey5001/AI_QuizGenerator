@@ -1,5 +1,6 @@
 package com.sudhanshu.quizapp.core.presentation.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -22,7 +23,9 @@ import androidx.compose.material3.NavigationBar
 @Composable
 fun QuizAppNavigationBar(
     heading: String = "",
-    onClickBackButton: () -> Unit
+    trailingText: String = "",
+    onClickBackButton: () -> Unit,
+    onClickTrailingText: (() -> Unit)? = null
 ) {
     SetStatusBarColor(color = MaterialTheme.colorScheme.primary)
     NavigationBar(
@@ -45,6 +48,14 @@ fun QuizAppNavigationBar(
             Text(
                 text = heading,
                 fontSize = 24.sp
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .clickable { onClickTrailingText?.invoke() },
+                text = trailingText,
+                fontSize = 20.sp
             )
         }
     }

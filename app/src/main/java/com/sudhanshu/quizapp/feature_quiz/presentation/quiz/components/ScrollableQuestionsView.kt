@@ -3,8 +3,6 @@ package com.sudhanshu.quizapp.feature_quiz.presentation.quiz.components
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.FlingBehavior
-import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,9 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,12 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.sudhanshu.quizapp.R
-import com.sudhanshu.quizapp.core.presentation.components.GifView
-import com.sudhanshu.quizapp.core.utils.Utils
 import com.sudhanshu.quizapp.feature_quiz.domain.model.Question
-import com.sudhanshu.quizapp.feature_quiz.domain.model.QuestionVisitedStates
-import com.sudhanshu.quizapp.feature_quiz.presentation.quiz.LoadingState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -89,8 +80,11 @@ fun ScrollableQuestionsView(
             var colorBubble: Color
             var colorBubbleContent: Color
 
-            if (quizData[index].questionVisitedStatus) {
-                colorBubble = Color(0xFF2E8B57)
+            if (quizData[index].questionAttempted && quizData[index].isCorrect) {
+                colorBubble = MaterialTheme.colorScheme.outline
+                colorBubbleContent = Color.White
+            } else if (quizData[index].questionAttempted && !quizData[index].isCorrect) {
+                colorBubble = MaterialTheme.colorScheme.error
                 colorBubbleContent = Color.White
             } else {
                 colorBubble = Color.DarkGray
